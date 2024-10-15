@@ -52,6 +52,35 @@ type Config struct {
 	Format   string       `json:"format"   yaml:"format"`
 }
 
+// LoadEnvironment loads missing configuration from the environment.
+func (c *Config) LoadEnvironment() error {
+	if c.Endpoint == "" {
+		c.Endpoint = os.Getenv("APICTL_CONFIG_ENDPOINT")
+	}
+
+	if c.Format == "" {
+		c.Format = os.Getenv("APICTL_CONFIG_FORMAT")
+	}
+
+	if c.Headers == nil {
+		v := os.Getenv("APICTL_CONFIG_HEADERS")
+
+		if err := json.Unmarshal([]byte(v), &c.Headers); err != nil {
+			return fmt.Errorf("unable to parse APICTL_CONFIG_HEADERS: %w", err)
+		}
+	}
+
+	if c.TLS == nil {
+		v := os.Getenv("APICTL_CONFIG_TLS")
+
+		if err := json.Unmarshal([]byte(v), &c.TLS); err != nil {
+			return fmt.Errorf("unable to parse APICTL_CONFIG_TLS: %w", err)
+		}
+	}
+
+	return nil
+}
+
 // Version information.
 var Version = "0.0.1"
 
@@ -209,6 +238,12 @@ func ParseArgs() (*Args, *Config, error) {
 func main() {
 	args, cfg, err := ParseArgs()
 	if err != nil {
+		fmt.Println("ERROR: ", err.Error())
+
+		os.Exit(1)
+	}
+
+	if err := cfg.LoadEnvironment(); err != nil {
 		fmt.Println("ERROR: ", err.Error())
 
 		os.Exit(1)
