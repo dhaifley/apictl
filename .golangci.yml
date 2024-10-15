@@ -1,0 +1,25 @@
+run:
+  timeout: 10m
+linters-settings:
+  nestif:
+    min-complexity: 72
+  lll:
+    line-length: 256
+linters:
+  fast: true
+  enable-all: true
+  disable:
+    - depguard
+    - dupl
+    - funlen
+    - gocognit
+    - goconst
+    - gocyclo
+    - gomnd
+    - ifshort
+    - interfacebloat
+    - maintidx
+    - mnd
+    - nosnakecase
+    - scopelint
+    - tagliatelle
