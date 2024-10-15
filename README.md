@@ -6,6 +6,14 @@ A simple REST API command line interface utility.
 ```
 Usage: apictl [<option>] <command> <resource> [<id>] [<query>]
 
+Options:
+  --help = Display this usage message
+  --version = Display the command version
+  --config.endpoint = Base endpoint URL of the API request
+  --config.format = (json|yaml) Format of the command input and output
+  --config.headers = Optional, HTTP headers to include with the API request
+  --config.tls = Optional, TLS options to use for the API request
+  
 Commands:
   get
   post, create
@@ -14,12 +22,15 @@ Commands:
   delete
   option, head
 
-Options:
-  --help = Display this usage message
-  --config.endpoint = Base endpoint URL of the API request
-  --config.format = (json|yaml) Format of the command input and output
-  --config.headers = Optional, HTTP headers to include with the API request
-  --config.tls = Optional, TLS options to use for the API request
+Resource:
+  Any resource or path provided by the API
+
+ID:
+  A resource identifier (if applicable)
+
+Query Parameters:
+  Any parameters beginning with -- will be sent as query parameters with the API
+request. For example, --param=value will be sent as ?param=value.
 ```
 
 ## Example

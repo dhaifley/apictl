@@ -87,6 +87,14 @@ var Version = "0.0.1"
 // Usage details.
 const Usage = `Usage: apictl [<option>] <command> <resource> [<id>] [<query>]
 
+Options:
+  --help = Display this usage message
+  --version = Display the command version
+  --config.endpoint = Base endpoint URL of the API request
+  --config.format = (json|yaml) Format of the command input and output
+  --config.headers = Optional, HTTP headers to include with the API request
+  --config.tls = Optional, TLS options to use for the API request
+  
 Commands:
   get
   post, create
@@ -95,12 +103,15 @@ Commands:
   delete
   option, head
 
-Options:
-  --help = Display this usage message
-  --config.endpoint = Base endpoint URL of the API request
-  --config.format = (json|yaml) Format of the command input and output
-  --config.headers = Optional, HTTP headers to include with the API request
-  --config.tls = Optional, TLS options to use for the API request`
+Resource:
+  Any resource or path provided by the API
+
+ID:
+  A resource identifier (if applicable)
+
+Query Parameters:
+  Any parameters beginning with -- will be sent as query parameters with the API
+request. For example, --param=value will be sent as ?param=value.`
 
 // ParseArgs is used to parse the arguments to the command into the required
 // data structures.
@@ -203,12 +214,12 @@ func ParseArgs() (*Args, *Config, error) {
 		b, err := json.Marshal(cfgMap)
 		if err != nil {
 			return nil, nil,
-				fmt.Errorf("unable to marshal config map: %w", err)
+				fmt.Errorf("unable to format config map: %w", err)
 		}
 
 		if err := json.Unmarshal(b, &cfg); err != nil {
 			return nil, nil,
-				fmt.Errorf("unable to unmarshal config: %w", err)
+				fmt.Errorf("unable to parse config from map: %w", err)
 		}
 	}
 
@@ -291,7 +302,7 @@ func main() {
 
 			b, err = json.Marshal(r)
 			if err != nil {
-				fmt.Println("ERROR: unable to marshal input as JSON: ",
+				fmt.Println("ERROR: unable to format input as JSON: ",
 					err.Error())
 
 				os.Exit(1)
@@ -382,7 +393,7 @@ func main() {
 
 			b, err = yaml.Marshal(r)
 			if err != nil {
-				fmt.Println("ERROR: unable to marshal response as YAML: ",
+				fmt.Println("ERROR: unable to format response as YAML: ",
 					err.Error())
 
 				os.Exit(1)
