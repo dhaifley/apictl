@@ -33,13 +33,34 @@ Query Parameters:
 request. For example, --param=value will be sent as ?param=value.
 ```
 
-## Example
+## Examples
 ```sh
 $ apictl --config.format='yaml' \
 --config.endpoint='https://example.com/v1/api' \
 --config.tls='{"InsecureSkipVerify":true}' \
 --config.headers='{"Authorization":["token"]}' \
 get users --search='and(email:dev*)' --size=1
+```
+
+```sh
+created_at: 1721923211
+created_by: null
+data: null
+email: dev@test.com
+first_name: null
+last_name: null
+status: active
+updated_at: 1721923211
+updated_by: null
+user_id: dev@test.com
+```
+
+```sh
+$ apictl --config.format='yaml' \
+--config.endpoint='https://example.com/v1/api' \
+--config.tls='{"InsecureSkipVerify":true}' \
+--config.headers='{"Authorization":["token"]}' \
+get user dev@test.com
 ```
 
 ```sh
