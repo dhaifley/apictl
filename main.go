@@ -17,7 +17,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Commands
+// Commands.
 const (
 	CmdGet     = http.MethodGet
 	CmdCreate  = "CREATE"
@@ -30,7 +30,7 @@ const (
 	CmdHead    = http.MethodHead
 )
 
-// Formats
+// Formats.
 const (
 	FmtJSON = "json"
 	FmtYAML = "yaml"
@@ -38,22 +38,22 @@ const (
 
 // Args values are used to represent the arguments to the command.
 type Args struct {
-	Method   string      `json:"method" yaml:"method"`
+	Method   string      `json:"method"   yaml:"method"`
 	Resource string      `json:"resource" yaml:"resource"`
-	ID       *string     `json:"id" yaml:"id"`
-	Query    *url.Values `json:"query" yaml:"query"`
+	ID       *string     `json:"id"       yaml:"id"`
+	Query    *url.Values `json:"query"    yaml:"query"`
 }
 
 // Config values are used to configure the API requests.
 type Config struct {
 	Endpoint string       `json:"endpoint" yaml:"endpoint"`
-	Headers  *http.Header `json:"headers" yaml:"headers"`
-	TLS      *tls.Config  `json:"tls" yaml:"tls"`
-	Format   string       `json:"format" yaml:"format"`
+	Headers  *http.Header `json:"headers"  yaml:"headers"`
+	TLS      *tls.Config  `json:"tls"      yaml:"tls"`
+	Format   string       `json:"format"   yaml:"format"`
 }
 
 // Version information.
-const Version = "0.0.1"
+var Version = "0.0.1"
 
 // Usage details.
 const Usage = `Usage: apictl [<option>] <command> <resource> [<id>] [<query>]
