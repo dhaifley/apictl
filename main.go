@@ -343,7 +343,8 @@ func main() {
 		}
 
 		if err != nil {
-			fmt.Println("ERROR: unable format response headers: ", err.Error())
+			fmt.Println("ERROR: unable to format response headers: ",
+				err.Error())
 
 			os.Exit(1)
 		}
@@ -356,7 +357,7 @@ func main() {
 
 	b, err := io.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println("ERROR: unable read response body: ", err.Error())
+		fmt.Println("ERROR: unable to read response body: ", err.Error())
 
 		os.Exit(1)
 	}
