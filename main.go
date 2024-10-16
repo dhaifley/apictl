@@ -334,14 +334,22 @@ func main() {
 	defer res.Body.Close()
 
 	if args.Method == CmdOptions || args.Method == CmdHead {
-		b, err := json.Marshal(res.Header)
+		var b []byte
+
+		if cfg.Format == FmtYAML {
+			b, err = yaml.Marshal(res.Header)
+		} else {
+			b, err = json.Marshal(res.Header)
+		}
+
 		if err != nil {
 			fmt.Println("ERROR: unable format response headers: ", err.Error())
 
 			os.Exit(1)
 		}
 
-		fmt.Println(res.StatusCode, string(b))
+		fmt.Println(res.StatusCode)
+		fmt.Println(string(b))
 
 		os.Exit(0)
 	}
