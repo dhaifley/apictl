@@ -4,7 +4,7 @@ A simple REST API command line interface utility.
 ## Usage
 
 ```
-Usage: apictl [<option>] <command> <resource> [<id>] [<query>]
+Usage: apictl [<option>] <command> <resource> [<query>]
 
 Options:
   --help = Display this usage message
@@ -22,11 +22,9 @@ Commands:
   delete
   option, head
 
-Resource:
-  Any resource or path provided by the API
-
-ID:
-  A resource identifier (if applicable)
+Resources:
+  Any resource or ID provided by the API. Multiple parameters will be combined
+as path segments in the API request.
 
 Query Parameters:
   Any parameters beginning with -- will be sent as query parameters with the API

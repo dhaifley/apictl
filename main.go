@@ -17,6 +17,36 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Version information.
+var Version = "0.0.0"
+
+// Usage details.
+const Usage = `Usage: apictl [<option>] <command> <resource> [<query>]
+
+Options:
+  --help = Display this usage message
+  --version = Display the command version
+  --config.endpoint = Base endpoint URL of the API request
+  --config.format = (json|yaml) Format of the command input and output
+  --config.headers = Optional, HTTP headers to include with the API request
+  --config.tls = Optional, TLS options to use for the API request
+  
+Commands:
+  get
+  post, create
+  put, update
+  patch
+  delete
+  option, head
+
+Resources:
+  Any resource or ID provided by the API. Multiple parameters will be combined
+as path segments in the API request.
+
+Query Parameters:
+  Any parameters beginning with -- will be sent as query parameters with the API
+request. For example, --param=value will be sent as ?param=value.`
+
 // Commands.
 const (
 	CmdGet     = http.MethodGet
@@ -40,7 +70,6 @@ const (
 type Args struct {
 	Method   string      `json:"method"   yaml:"method"`
 	Resource string      `json:"resource" yaml:"resource"`
-	ID       *string     `json:"id"       yaml:"id"`
 	Query    *url.Values `json:"query"    yaml:"query"`
 }
 
@@ -80,38 +109,6 @@ func (c *Config) LoadEnvironment() error {
 
 	return nil
 }
-
-// Version information.
-var Version = "0.0.1"
-
-// Usage details.
-const Usage = `Usage: apictl [<option>] <command> <resource> [<id>] [<query>]
-
-Options:
-  --help = Display this usage message
-  --version = Display the command version
-  --config.endpoint = Base endpoint URL of the API request
-  --config.format = (json|yaml) Format of the command input and output
-  --config.headers = Optional, HTTP headers to include with the API request
-  --config.tls = Optional, TLS options to use for the API request
-  
-Commands:
-  get
-  post, create
-  put, update
-  patch
-  delete
-  option, head
-
-Resource:
-  Any resource or path provided by the API
-
-ID:
-  A resource identifier (if applicable)
-
-Query Parameters:
-  Any parameters beginning with -- will be sent as query parameters with the API
-request. For example, --param=value will be sent as ?param=value.`
 
 // ParseArgs is used to parse the arguments to the command into the required
 // data structures.
@@ -198,15 +195,8 @@ func ParseArgs() (*Args, *Config, error) {
 
 		if args.Resource == "" {
 			args.Resource = arg
-
-			continue
-		}
-
-		if args.ID == nil {
-			args.ID = new(string)
-			*args.ID = arg
-
-			continue
+		} else {
+			args.Resource = path.Join(args.Resource, arg)
 		}
 	}
 
@@ -272,10 +262,6 @@ func main() {
 
 	ur.Path = path.Join(ur.Path, args.Resource)
 
-	if args.ID != nil {
-		ur.Path = path.Join(ur.Path, *args.ID)
-	}
-
 	if args.Query != nil {
 		ur.RawQuery = args.Query.Encode()
 	}
@@ -332,10 +318,10 @@ func main() {
 		req.Header = *cfg.Headers
 	}
 
-	cli := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: cfg.TLS,
-		},
+	cli := &http.Client{}
+
+	if cfg.TLS != nil {
+		cli.Transport = &http.Transport{TLSClientConfig: cfg.TLS}
 	}
 
 	res, err := cli.Do(req)
